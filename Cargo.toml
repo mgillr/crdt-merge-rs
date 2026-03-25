@@ -1,0 +1,31 @@
+[package]
+name = "crdt-merge"
+version = "0.1.0"
+edition = "2021"
+authors = ["Optitransfer"]
+description = "Conflict-free merge, dedup & diff for any dataset. Powered by CRDTs."
+license = "MIT"
+repository = "https://github.com/mgillr/crdt-merge-rs"
+keywords = ["crdt", "merge", "dedup", "conflict-free", "data"]
+categories = ["data-structures", "algorithms"]
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+csv = "1"
+clap = { version = "4", features = ["derive"] }
+ordered-float = { version = "4", features = ["serde"] }
+uuid = { version = "1", features = ["v4"] }
+
+[lib]
+name = "crdt_merge"
+path = "src/lib.rs"
+
+[[bin]]
+name = "crdt-merge"
+path = "src/bin/crdt-merge.rs"
+
+[profile.release]
+opt-level = "s"
+lto = true
+strip = true
