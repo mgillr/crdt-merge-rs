@@ -6,7 +6,7 @@
 
 [![crates.io](https://img.shields.io/crates/v/crdt-merge.svg)](https://crates.io/crates/crdt-merge)
 [![Rust](https://img.shields.io/badge/Rust-1.70+-orange.svg)](https://www.rust-lang.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Tests: 88/88](https://img.shields.io/badge/tests-88%2F88-brightgreen.svg)](https://github.com/mgillr/crdt-merge-rs)
 
 **Merge any two datasets in one function call. No conflicts. No coordination. No data loss.**
@@ -204,9 +204,13 @@ This means: **zero coordination, zero locks, zero conflicts.**
 - **JSON Merge**: Deep recursive merge of arbitrary JSON structures
 - **CLI**: Merge, dedup, diff, and json-merge commands for CSV/JSON files
 
-## 📄 License
+## License
 
-MIT — use it for anything.
+Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for details.
+
+Copyright 2026 Ryan Gillespie / Optitransfer. See [NOTICE](NOTICE) for attribution requirements.
+
+For commercial licensing inquiries: leer@optitransfer.ch
 
 ---
 
