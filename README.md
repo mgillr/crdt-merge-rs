@@ -212,7 +212,7 @@ Licensed under the [Apache License, Version 2.0](LICENSE).
 
 Copyright 2026 Ryan Gillespie / Optitransfer. See [NOTICE](NOTICE) for attribution requirements.
 
-For commercial licensing inquiries: **leer@optitransfer.ch**
+For commercial licensing inquiries: **rgillespie83@icloud.com**, **data@optitransfer.ch**
 
 ---
 
