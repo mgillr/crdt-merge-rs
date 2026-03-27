@@ -206,11 +206,13 @@ This means: **zero coordination, zero locks, zero conflicts.**
 
 ## License
 
-Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for details.
+Licensed under the [Apache License, Version 2.0](LICENSE).
+
+> **Contributing?** By opening a pull request, you agree to our [Contributor License Agreement](CLA.md).
 
 Copyright 2026 Ryan Gillespie / Optitransfer. See [NOTICE](NOTICE) for attribution requirements.
 
-For commercial licensing inquiries: leer@optitransfer.ch
+For commercial licensing inquiries: **leer@optitransfer.ch**
 
 ---
 
