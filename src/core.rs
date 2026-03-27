@@ -1,3 +1,8 @@
+// Copyright 2026 Ryan Gillespie
+// SPDX-License-Identifier: Apache-2.0
+//
+// Commercial licensing: data@optitransfer.ch, rgillespie83@icloud.com
+
 //! Core CRDT types: GCounter, PNCounter, LWWRegister, ORSet.
 
 use serde::{Deserialize, Serialize};
