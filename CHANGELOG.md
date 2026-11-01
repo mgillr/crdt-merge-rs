@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.0 - 2026-11-01
+## 0.3.0 - 2026-11-01
 
 This release makes the Rust edition read and write the same wire form as the reference
 implementation, so a state written by any edition loads in the others and re-emits byte for

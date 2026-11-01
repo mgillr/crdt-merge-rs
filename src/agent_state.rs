@@ -167,7 +167,7 @@ impl AgentState {
         let id = self.agent_id.clone();
         self.counters
             .entry(name.to_string())
-            .or_insert_with(PNCounter::new)
+            .or_default()
             .increment_by(&id, amount);
     }
 
@@ -176,7 +176,7 @@ impl AgentState {
         let id = self.agent_id.clone();
         self.counters
             .entry(name.to_string())
-            .or_insert_with(PNCounter::new)
+            .or_default()
             .decrement_by(&id, amount);
     }
 
