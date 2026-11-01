@@ -129,9 +129,9 @@ fn diff_mixed_changes() {
         json!({"id": "3", "name": "Charlie"}),
     ];
     let b = vec![
-        json!({"id": "1", "name": "Alice"}),   // unchanged
-        json!({"id": "2", "name": "Bobby"}),    // modified
-        json!({"id": "4", "name": "Dave"}),     // added
+        json!({"id": "1", "name": "Alice"}), // unchanged
+        json!({"id": "2", "name": "Bobby"}), // modified
+        json!({"id": "4", "name": "Dave"}),  // added
     ];
     let result = diff(&a, &b, None);
     assert_eq!(result.unchanged.len(), 1);

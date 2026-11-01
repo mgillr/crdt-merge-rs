@@ -42,11 +42,7 @@ pub struct DedupResult {
 ///
 /// When no key is given, the full JSON serialisation is used for exact
 /// matching, and no fuzzy matching is performed.
-pub fn dedup(
-    items: &[Value],
-    key: Option<&str>,
-    threshold: Option<f64>,
-) -> DedupResult {
+pub fn dedup(items: &[Value], key: Option<&str>, threshold: Option<f64>) -> DedupResult {
     let threshold = threshold.unwrap_or(0.85);
     let n = items.len();
 
@@ -67,33 +63,30 @@ pub fn dedup(
                 }
                 let val_j = extract_string(&items[j], key_field);
 
-                match (&val_i, &val_j) {
-                    (Some(a), Some(b)) => {
-                        if a == b {
-                            // Exact duplicate
+                if let (Some(a), Some(b)) = (&val_i, &val_j) {
+                    if a == b {
+                        // Exact duplicate
+                        is_dup[j] = true;
+                        duplicates.push(DuplicatePair {
+                            index_a: j,
+                            index_b: i,
+                            similarity: 1.0,
+                            record_a: items[j].clone(),
+                            record_b: items[i].clone(),
+                        });
+                    } else {
+                        let sim = jaccard_similarity(a, b);
+                        if sim >= threshold {
                             is_dup[j] = true;
                             duplicates.push(DuplicatePair {
                                 index_a: j,
                                 index_b: i,
-                                similarity: 1.0,
+                                similarity: sim,
                                 record_a: items[j].clone(),
                                 record_b: items[i].clone(),
                             });
-                        } else {
-                            let sim = jaccard_similarity(a, b);
-                            if sim >= threshold {
-                                is_dup[j] = true;
-                                duplicates.push(DuplicatePair {
-                                    index_a: j,
-                                    index_b: i,
-                                    similarity: sim,
-                                    record_a: items[j].clone(),
-                                    record_b: items[i].clone(),
-                                });
-                            }
                         }
                     }
-                    _ => {}
                 }
             }
         }

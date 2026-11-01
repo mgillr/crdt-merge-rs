@@ -376,7 +376,7 @@ impl<T: Clone + Debug + Eq + Hash> ORSet<T> {
         let tag = Uuid::new_v4().to_string();
         self.elements
             .entry(element)
-            .or_insert_with(HashSet::new)
+            .or_default()
             .insert(tag.clone());
         tag
     }
@@ -435,13 +435,13 @@ impl<T: Clone + Debug + Eq + Hash> ORSet<T> {
         for (elem, tags) in &self.elements {
             elements
                 .entry(elem.clone())
-                .or_insert_with(HashSet::new)
+                .or_default()
                 .extend(tags.iter().cloned());
         }
         for (elem, tags) in &other.elements {
             elements
                 .entry(elem.clone())
-                .or_insert_with(HashSet::new)
+                .or_default()
                 .extend(tags.iter().cloned());
         }
 

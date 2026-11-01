@@ -18,15 +18,17 @@
 pub mod agent_state;
 pub mod canonical;
 pub mod core;
-pub mod merge;
 pub mod dedup;
 pub mod diff;
 pub mod json_merge;
+pub mod merge;
 
 // Re-exports for convenience
 pub use crate::agent_state::{AgentState, Fact};
-pub use crate::core::{Element, GCounter, LWWMap, LWWRegister, ORSet, PNCounter, Timestamp, WireElement};
-pub use crate::merge::{merge, MergeOptions, Strategy};
+pub use crate::core::{
+    Element, GCounter, LWWMap, LWWRegister, ORSet, PNCounter, Timestamp, WireElement,
+};
 pub use crate::dedup::{dedup, DedupResult, DuplicatePair};
-pub use crate::diff::{diff, DiffResult, ModifiedRow, FieldChange};
+pub use crate::diff::{diff, DiffResult, FieldChange, ModifiedRow};
 pub use crate::json_merge::merge_json;
+pub use crate::merge::{merge, MergeOptions, Strategy};
