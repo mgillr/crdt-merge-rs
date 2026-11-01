@@ -1,5 +1,5 @@
 use crdt_merge::canonical::{canonicalize, emit_canonical};
-use crdt_merge::{Element, GCounter, LWWMap, LWWRegister, PNCounter, ORSet};
+use crdt_merge::{Element, GCounter, LWWMap, LWWRegister, ORSet, PNCounter};
 use serde_json::{json, Value};
 
 fn wire<T: serde::Serialize>(v: &T) -> Value {
@@ -12,7 +12,10 @@ fn wire<T: serde::Serialize>(v: &T) -> Value {
 fn orset_wire_form_has_a_type_key_and_no_tombstones_until_a_remove() {
     let mut s: ORSet<String> = ORSet::new();
     let tag = s.add("x".to_string());
-    assert_eq!(wire(&s), json!({"type": "or_set", "elements": {"x": [tag]}}));
+    assert_eq!(
+        wire(&s),
+        json!({"type": "or_set", "elements": {"x": [tag]}})
+    );
 }
 
 #[test]
@@ -23,22 +26,31 @@ fn orset_remove_records_tombstones_and_keeps_the_empty_element() {
     s.remove(&"x".to_string());
     let mut tags = vec![t1, t2];
     tags.sort();
-    assert_eq!(wire(&s), json!({"type": "or_set", "elements": {"x": []}, "tombstones": tags}));
+    assert_eq!(
+        wire(&s),
+        json!({"type": "or_set", "elements": {"x": []}, "tombstones": tags})
+    );
     assert!(!s.contains(&"x".to_string()));
 }
 
 #[test]
 fn orset_reads_a_wire_state_without_tombstones() {
-    let s: ORSet<String> = serde_json::from_value(json!({"type": "or_set", "elements": {"x": ["t1"]}})).unwrap();
+    let s: ORSet<String> =
+        serde_json::from_value(json!({"type": "or_set", "elements": {"x": ["t1"]}})).unwrap();
     assert!(s.contains(&"x".to_string()));
 }
 
 #[test]
 fn orset_drops_tombstoned_tags_when_reading() {
-    let s: ORSet<String> =
-        serde_json::from_value(json!({"type": "or_set", "elements": {"x": ["t1"]}, "tombstones": ["t1"]})).unwrap();
+    let s: ORSet<String> = serde_json::from_value(
+        json!({"type": "or_set", "elements": {"x": ["t1"]}, "tombstones": ["t1"]}),
+    )
+    .unwrap();
     assert!(!s.contains(&"x".to_string()));
-    assert_eq!(wire(&s), json!({"type": "or_set", "elements": {"x": []}, "tombstones": ["t1"]}));
+    assert_eq!(
+        wire(&s),
+        json!({"type": "or_set", "elements": {"x": []}, "tombstones": ["t1"]})
+    );
 }
 
 #[test]
@@ -53,9 +65,12 @@ fn orset_a_stale_replica_does_not_resurrect_a_removed_element() {
 
 #[test]
 fn orset_merge_keeps_the_key_of_an_emptied_element() {
-    let a: ORSet<String> =
-        serde_json::from_value(json!({"type": "or_set", "elements": {"x": []}, "tombstones": ["t1"]})).unwrap();
-    let b: ORSet<String> = serde_json::from_value(json!({"type": "or_set", "elements": {"y": ["t2"]}})).unwrap();
+    let a: ORSet<String> = serde_json::from_value(
+        json!({"type": "or_set", "elements": {"x": []}, "tombstones": ["t1"]}),
+    )
+    .unwrap();
+    let b: ORSet<String> =
+        serde_json::from_value(json!({"type": "or_set", "elements": {"y": ["t2"]}})).unwrap();
     assert_eq!(
         wire(&a.merge(&b)),
         json!({"type": "or_set", "elements": {"x": [], "y": ["t2"]}, "tombstones": ["t1"]})
@@ -221,7 +236,10 @@ fn lwwmap_a_register_newer_than_a_merged_tombstone_is_live() {
 fn lwwmap_merge_keeps_a_tombstone_with_timestamp_zero() {
     let mut a = LWWMap::new();
     a.delete("k", 0.0);
-    assert_eq!(wire(&a.merge(&LWWMap::new()))["tombstones"], json!({"k": 0.0}));
+    assert_eq!(
+        wire(&a.merge(&LWWMap::new()))["tombstones"],
+        json!({"k": 0.0})
+    );
 }
 
 #[test]
@@ -250,5 +268,8 @@ fn canonicalize_sorts_the_tag_lists_of_every_or_set_also_nested() {
 #[test]
 fn emit_canonical_sorts_keys_by_code_point_and_ends_with_a_newline() {
     let s = emit_canonical(&json!({"b": 1, "a": [], "\u{e9}": {}, "Z": "x"}));
-    assert_eq!(s, "{\n  \"Z\": \"x\",\n  \"a\": [],\n  \"b\": 1,\n  \"\u{e9}\": {}\n}\n");
+    assert_eq!(
+        s,
+        "{\n  \"Z\": \"x\",\n  \"a\": [],\n  \"b\": 1,\n  \"\u{e9}\": {}\n}\n"
+    );
 }

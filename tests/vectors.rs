@@ -29,9 +29,15 @@ enum State {
 fn load(wire: &Value) -> Result<State, String> {
     let e = |x: serde_json::Error| x.to_string();
     match wire["type"].as_str().unwrap_or("") {
-        "or_set" => serde_json::from_value(wire.clone()).map(State::Set).map_err(e),
-        "lww_map" => serde_json::from_value(wire.clone()).map(State::Map).map_err(e),
-        "agent_state" => serde_json::from_value(wire.clone()).map(State::Agent).map_err(e),
+        "or_set" => serde_json::from_value(wire.clone())
+            .map(State::Set)
+            .map_err(e),
+        "lww_map" => serde_json::from_value(wire.clone())
+            .map(State::Map)
+            .map_err(e),
+        "agent_state" => serde_json::from_value(wire.clone())
+            .map(State::Agent)
+            .map_err(e),
         other => Err(format!("unknown wire type {other}")),
     }
 }
@@ -85,7 +91,11 @@ fn observable(state: &State) -> Value {
 
 fn check(name: &str) {
     let (raw, doc) = read(name);
-    assert_eq!(emit_canonical(&doc), raw, "{name}.json is not in canonical form");
+    assert_eq!(
+        emit_canonical(&doc),
+        raw,
+        "{name}.json is not in canonical form"
+    );
 
     let mut failures: Vec<String> = Vec::new();
     let mut round_trip = |label: String, wire: &Value| match load(wire) {
@@ -97,20 +107,34 @@ fn check(name: &str) {
         Err(e) => failures.push(format!("{label}: {e}")),
     };
     for v in doc["vectors"].as_array().expect("vectors") {
-        round_trip(format!("state {}", v["name"].as_str().unwrap()), &v["state"]);
+        round_trip(
+            format!("state {}", v["name"].as_str().unwrap()),
+            &v["state"],
+        );
     }
     for m in doc["merges"].as_array().expect("merges") {
         for side in ["a", "b", "result"] {
-            round_trip(format!("merge {} {side}", m["name"].as_str().unwrap()), &m[side]);
+            round_trip(
+                format!("merge {} {side}", m["name"].as_str().unwrap()),
+                &m[side],
+            );
         }
     }
-    assert!(failures.is_empty(), "{} vectors do not round-trip:\n{}", failures.len(), failures.join("\n"));
+    assert!(
+        failures.is_empty(),
+        "{} vectors do not round-trip:\n{}",
+        failures.len(),
+        failures.join("\n")
+    );
 
     let mut mismatches: Vec<String> = Vec::new();
     for v in doc["vectors"].as_array().unwrap() {
         let state = load(&v["state"]).unwrap();
         if emit_canonical(&observable(&state)) != emit_canonical(&v["value"]) {
-            mismatches.push(format!("state {}: observable value differs", v["name"].as_str().unwrap()));
+            mismatches.push(format!(
+                "state {}: observable value differs",
+                v["name"].as_str().unwrap()
+            ));
         }
     }
     for m in doc["merges"].as_array().unwrap() {

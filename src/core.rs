@@ -7,13 +7,13 @@
 //!
 //! Every type reads and writes the wire form shared with the other editions (see `canonical`).
 
+use ordered_float::OrderedFloat;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::fmt;
 use std::fmt::Debug;
 use std::hash::Hash;
-use ordered_float::OrderedFloat;
 use uuid::Uuid;
 
 // ---------------------------------------------------------------------------
@@ -291,7 +291,10 @@ wire_int!(i32, i64, u32, u64);
 
 impl WireElement for bool {
     fn to_wire(&self) -> (String, Option<&'static str>) {
-        ((if *self { "True" } else { "False" }).to_string(), Some("bool"))
+        (
+            (if *self { "True" } else { "False" }).to_string(),
+            Some("bool"),
+        )
     }
     fn from_wire(key: &str, ty: Option<&str>) -> Result<Self, String> {
         match ty {
@@ -504,14 +507,27 @@ impl<T: Clone + Debug + Eq + Hash + WireElement> Serialize for ORSet<T> {
             kind: or_set_kind(),
             elements: BTreeMap::new(),
             element_types: BTreeMap::new(),
-            tombstones: self.tombstones.iter().cloned().collect::<BTreeSet<_>>().into_iter().collect(),
+            tombstones: self
+                .tombstones
+                .iter()
+                .cloned()
+                .collect::<BTreeSet<_>>()
+                .into_iter()
+                .collect(),
         };
         for (element, tags) in &self.elements {
             let (key, ty) = element.to_wire();
             if let Some(ty) = ty {
                 wire.element_types.insert(key.clone(), ty.to_string());
             }
-            wire.elements.insert(key, tags.iter().cloned().collect::<BTreeSet<_>>().into_iter().collect());
+            wire.elements.insert(
+                key,
+                tags.iter()
+                    .cloned()
+                    .collect::<BTreeSet<_>>()
+                    .into_iter()
+                    .collect(),
+            );
         }
         wire.serialize(serializer)
     }
@@ -522,16 +538,26 @@ impl<'de, T: Clone + Debug + Eq + Hash + WireElement> Deserialize<'de> for ORSet
         use serde::de::Error;
         let wire = ORSetWire::deserialize(deserializer)?;
         if wire.kind != "or_set" {
-            return Err(D::Error::custom(format!("expected an or_set, found {:?}", wire.kind)));
+            return Err(D::Error::custom(format!(
+                "expected an or_set, found {:?}",
+                wire.kind
+            )));
         }
         let tombstones: HashSet<String> = wire.tombstones.into_iter().collect();
         let mut elements = HashMap::new();
         for (key, tags) in wire.elements {
-            let element = T::from_wire(&key, wire.element_types.get(&key).map(String::as_str)).map_err(D::Error::custom)?;
-            let live: HashSet<String> = tags.into_iter().filter(|t| !tombstones.contains(t)).collect();
+            let element = T::from_wire(&key, wire.element_types.get(&key).map(String::as_str))
+                .map_err(D::Error::custom)?;
+            let live: HashSet<String> = tags
+                .into_iter()
+                .filter(|t| !tombstones.contains(t))
+                .collect();
             elements.insert(element, live);
         }
-        Ok(Self { elements, tombstones })
+        Ok(Self {
+            elements,
+            tombstones,
+        })
     }
 }
 
@@ -560,8 +586,10 @@ impl LWWMap {
 
     /// Write a key. The write replaces the register, and clears the tombstone if it is newer.
     pub fn set(&mut self, key: &str, value: Value, timestamp: f64, node_id: &str) {
-        self.registers
-            .insert(key.to_string(), LWWRegister::with_node(value, timestamp, node_id));
+        self.registers.insert(
+            key.to_string(),
+            LWWRegister::with_node(value, timestamp, node_id),
+        );
         if let Some(&tomb) = self.tombstones.get(key) {
             if timestamp > tomb {
                 self.tombstones.remove(key);
@@ -619,7 +647,10 @@ impl LWWMap {
                 *entry = ts;
             }
         }
-        Self { registers, tombstones }
+        Self {
+            registers,
+            tombstones,
+        }
     }
 }
 

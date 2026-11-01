@@ -57,7 +57,9 @@ fn append_message_records_content_role_agent_time_and_metadata() {
     s.append_message("hello", "agent", json!({"k": 1}), 20.5);
     assert_eq!(
         s.messages(),
-        vec![json!({"content": "hello", "role": "agent", "agent_id": "a1", "timestamp": 20.5, "metadata": {"k": 1}})]
+        vec![
+            json!({"content": "hello", "role": "agent", "agent_id": "a1", "timestamp": 20.5, "metadata": {"k": 1}})
+        ]
     );
 }
 
@@ -86,9 +88,18 @@ fn merge_leaves_both_inputs_unchanged() {
     a.add_fact("k", json!(1), 0.5, 1.5);
     let mut b = AgentState::new("b");
     b.add_tag("t");
-    let before = (serde_json::to_value(&a).unwrap(), serde_json::to_value(&b).unwrap());
+    let before = (
+        serde_json::to_value(&a).unwrap(),
+        serde_json::to_value(&b).unwrap(),
+    );
     let _ = a.merge(&b);
-    assert_eq!((serde_json::to_value(&a).unwrap(), serde_json::to_value(&b).unwrap()), before);
+    assert_eq!(
+        (
+            serde_json::to_value(&a).unwrap(),
+            serde_json::to_value(&b).unwrap()
+        ),
+        before
+    );
 }
 
 #[test]
@@ -154,5 +165,8 @@ fn the_wire_form_round_trips_and_has_the_agent_state_type() {
     assert_eq!(v["type"], json!("agent_state"));
     let back: AgentState = serde_json::from_value(v.clone()).unwrap();
     let again = serde_json::to_value(&back).unwrap();
-    assert_eq!(emit_canonical(&crdt_merge::canonical::canonicalize(&again)), emit_canonical(&crdt_merge::canonical::canonicalize(&v)));
+    assert_eq!(
+        emit_canonical(&crdt_merge::canonical::canonicalize(&again)),
+        emit_canonical(&crdt_merge::canonical::canonicalize(&v))
+    );
 }

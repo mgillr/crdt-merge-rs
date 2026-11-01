@@ -120,13 +120,19 @@ impl AgentState {
             timestamp,
         };
         let id = self.agent_id.clone();
-        self.facts
-            .set(key, serde_json::to_value(&fact).expect("fact"), timestamp, &id);
+        self.facts.set(
+            key,
+            serde_json::to_value(&fact).expect("fact"),
+            timestamp,
+            &id,
+        );
     }
 
     /// The live fact under a key.
     pub fn get_fact(&self, key: &str) -> Option<Fact> {
-        self.facts.get(key).and_then(|v| serde_json::from_value(v.clone()).ok())
+        self.facts
+            .get(key)
+            .and_then(|v| serde_json::from_value(v.clone()).ok())
     }
 
     /// All live facts.
@@ -224,7 +230,9 @@ impl AgentState {
     /// union on the deduplication key, sorted by time. The agent id is the sorted union joined
     /// by `+`, and `created_at` is the earlier time. Neither input changes.
     pub fn merge(&self, other: &Self) -> Self {
-        let ids: BTreeSet<&str> = [self.agent_id.as_str(), other.agent_id.as_str()].into_iter().collect();
+        let ids: BTreeSet<&str> = [self.agent_id.as_str(), other.agent_id.as_str()]
+            .into_iter()
+            .collect();
         let mut result = AgentState::new(&ids.into_iter().collect::<Vec<_>>().join("+"));
         result.max_messages = self.max_messages.max(other.max_messages);
         result.dedup_strategy = self.dedup_strategy.clone();
@@ -259,7 +267,11 @@ impl AgentState {
             }
         }
         let time = |m: &Value| m["timestamp"].as_f64().unwrap_or(0.0);
-        merged.sort_by(|a, b| time(a).partial_cmp(&time(b)).unwrap_or(std::cmp::Ordering::Equal));
+        merged.sort_by(|a, b| {
+            time(a)
+                .partial_cmp(&time(b))
+                .unwrap_or(std::cmp::Ordering::Equal)
+        });
         result.messages = merged;
         result.trim();
         result.created_at = self.created_at.min(other.created_at);
