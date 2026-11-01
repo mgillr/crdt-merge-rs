@@ -40,7 +40,7 @@ API
 - `ORSet::remove_tag` and `LWWRegister::with_node` and `node_id`.
 - The `canonical` module with `canonicalize` and `emit_canonical`: sorted keys, two-space indent,
   trailing newline, sorted tag lists.
-- Continuous integration runs `cargo test` on pull requests and on pushes to main.
+- Continuous integration runs `cargo test` on pull requests and on pushes to main. A second workflow, added with the formatting cleanup, also runs `cargo fmt --check` and `cargo clippy -D warnings`.
 
 ### Known gaps
 - A whole-number float prints as `5.0` in Python and Rust but `5` in JavaScript. The vectors
@@ -49,5 +49,3 @@ API
   keeps the right value, so that merge is not commutative in either. `LWWRegister::set` ignores
   an older timestamp here but overwrites in the reference; an existing test pins the Rust behaviour.
 - An unknown `element_types` name is read as a string by `Element`.
-- `cargo fmt --check` and `cargo clippy -D warnings` fail on the base branch already, so the
-  workflow does not run them yet.

@@ -23,7 +23,7 @@ fn read(name: &str) -> (String, Value) {
 enum State {
     Set(ORSet<Element>),
     Map(LWWMap),
-    Agent(AgentState),
+    Agent(Box<AgentState>),
 }
 
 fn load(wire: &Value) -> Result<State, String> {
@@ -55,7 +55,7 @@ fn merge(a: &State, b: &State) -> State {
     match (a, b) {
         (State::Set(a), State::Set(b)) => State::Set(a.merge(b)),
         (State::Map(a), State::Map(b)) => State::Map(a.merge(b)),
-        (State::Agent(a), State::Agent(b)) => State::Agent(a.merge(b)),
+        (State::Agent(a), State::Agent(b)) => State::Agent(Box::new(a.merge(b))),
         _ => panic!("mixed types"),
     }
 }
