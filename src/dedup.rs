@@ -42,11 +42,7 @@ pub struct DedupResult {
 ///
 /// When no key is given, the full JSON serialisation is used for exact
 /// matching, and no fuzzy matching is performed.
-pub fn dedup(
-    items: &[Value],
-    key: Option<&str>,
-    threshold: Option<f64>,
-) -> DedupResult {
+pub fn dedup(items: &[Value], key: Option<&str>, threshold: Option<f64>) -> DedupResult {
     let threshold = threshold.unwrap_or(0.85);
     let n = items.len();
 

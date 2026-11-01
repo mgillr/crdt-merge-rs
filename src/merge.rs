@@ -52,11 +52,7 @@ impl Default for MergeOptions {
 ///
 /// Returns a new `Vec<Value>` with the merged records, ordered: matched records
 /// first (in order of `a`), then unmatched from `b`.
-pub fn merge(
-    a: &[Value],
-    b: &[Value],
-    options: Option<MergeOptions>,
-) -> Vec<Value> {
+pub fn merge(a: &[Value], b: &[Value], options: Option<MergeOptions>) -> Vec<Value> {
     let opts = options.unwrap_or_default();
     let key = &opts.key;
 

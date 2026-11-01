@@ -14,11 +14,7 @@ use std::collections::HashSet;
 /// - **Objects**: recursively merged. Fields unique to one side pass through.
 /// - **Arrays**: merged via set-union (preserving order, `a` first then new from `b`).
 /// - **Primitives**: resolved by `strategy` (default: `LWW`, i.e. `b` wins).
-pub fn merge_json(
-    a: &Value,
-    b: &Value,
-    strategy: Option<Strategy>,
-) -> Value {
+pub fn merge_json(a: &Value, b: &Value, strategy: Option<Strategy>) -> Value {
     let strategy = strategy.unwrap_or(Strategy::LWW);
     merge_recursive(a, b, &strategy)
 }

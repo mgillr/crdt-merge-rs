@@ -60,20 +60,14 @@ fn dedup_empty() {
 
 #[test]
 fn dedup_high_threshold_no_fuzzy() {
-    let items = vec![
-        json!({"name": "Alice"}),
-        json!({"name": "Alicia"}),
-    ];
+    let items = vec![json!({"name": "Alice"}), json!({"name": "Alicia"})];
     let result = dedup(&items, Some("name"), Some(0.99));
     assert_eq!(result.unique.len(), 2); // threshold too high for fuzzy match
 }
 
 #[test]
 fn dedup_low_threshold_catches_more() {
-    let items = vec![
-        json!({"name": "cat"}),
-        json!({"name": "car"}),
-    ];
+    let items = vec![json!({"name": "cat"}), json!({"name": "car"})];
     let result = dedup(&items, Some("name"), Some(0.3));
     // "cat" and "car" share bigrams "ca" out of {"ca","at"} ∪ {"ca","ar"} = 3 → 1/3 ≈ 0.33
     assert_eq!(result.unique.len(), 1);
