@@ -5,7 +5,7 @@
 This release makes the Rust edition read and write the same wire form as the reference
 implementation, so a state written by any edition loads in the others and re-emits byte for
 byte. The protocol vectors in `tests/vectors/` check this. They are copied from the reference at
-commit `b92d0ef`.
+commit `aab0099`.
 
 ### Breaking changes
 
