@@ -536,7 +536,7 @@ impl<'de, T: Clone + Debug + Eq + Hash + WireElement> Deserialize<'de> for ORSet
 }
 
 // ---------------------------------------------------------------------------
-// LWWMap – Last-Writer-Wins Map
+// LWWMap - Last-Writer-Wins Map
 // ---------------------------------------------------------------------------
 
 /// A dictionary where each key is a last-writer-wins register of a JSON value.
