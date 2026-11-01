@@ -10,20 +10,15 @@ use serde_json::Value;
 use std::collections::BTreeMap;
 
 /// Merge strategy for conflicting fields.
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Clone, Debug, Default, Serialize, Deserialize, PartialEq, Eq)]
 pub enum Strategy {
     /// Last-Writer-Wins: values from `b` override `a`.
+    #[default]
     LWW,
     /// Always keep `a`'s value.
     KeepA,
     /// Always keep `b`'s value.
     KeepB,
-}
-
-impl Default for Strategy {
-    fn default() -> Self {
-        Strategy::LWW
-    }
 }
 
 /// Options for the tabular merge operation.
