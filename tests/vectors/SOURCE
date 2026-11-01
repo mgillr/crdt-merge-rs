@@ -1,0 +1,3 @@
+These files are copied unchanged from the crdt-merge reference implementation at commit
+aab0099b1670f9ac824b15b9fc6617feb2bda424 (tests/vectors/). Do not edit them here. To update,
+copy the files from a newer reference commit and change the commit id above.
