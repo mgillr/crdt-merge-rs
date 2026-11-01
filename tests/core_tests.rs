@@ -1,4 +1,4 @@
-use crdt_merge::{GCounter, PNCounter, LWWRegister, ORSet};
+use crdt_merge::{GCounter, LWWRegister, ORSet, PNCounter};
 
 // ===========================================================================
 // GCounter tests

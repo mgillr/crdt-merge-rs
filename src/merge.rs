@@ -10,20 +10,15 @@ use serde_json::Value;
 use std::collections::BTreeMap;
 
 /// Merge strategy for conflicting fields.
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Clone, Debug, Default, Serialize, Deserialize, PartialEq, Eq)]
 pub enum Strategy {
     /// Last-Writer-Wins: values from `b` override `a`.
+    #[default]
     LWW,
     /// Always keep `a`'s value.
     KeepA,
     /// Always keep `b`'s value.
     KeepB,
-}
-
-impl Default for Strategy {
-    fn default() -> Self {
-        Strategy::LWW
-    }
 }
 
 /// Options for the tabular merge operation.
@@ -52,11 +47,7 @@ impl Default for MergeOptions {
 ///
 /// Returns a new `Vec<Value>` with the merged records, ordered: matched records
 /// first (in order of `a`), then unmatched from `b`.
-pub fn merge(
-    a: &[Value],
-    b: &[Value],
-    options: Option<MergeOptions>,
-) -> Vec<Value> {
+pub fn merge(a: &[Value], b: &[Value], options: Option<MergeOptions>) -> Vec<Value> {
     let opts = options.unwrap_or_default();
     let key = &opts.key;
 

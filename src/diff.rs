@@ -51,11 +51,7 @@ pub struct DiffResult {
 /// Compute the structural diff between two arrays of JSON records.
 ///
 /// Records are matched by a key field (default: `"id"`).
-pub fn diff(
-    a: &[Value],
-    b: &[Value],
-    key: Option<&str>,
-) -> DiffResult {
+pub fn diff(a: &[Value], b: &[Value], key: Option<&str>) -> DiffResult {
     let key_field = key.unwrap_or("id");
 
     // Build maps: key → record
@@ -111,10 +107,7 @@ pub fn diff(
 }
 
 /// Build an ordered map from key → record reference.
-fn build_index<'a>(
-    records: &'a [Value],
-    key: &str,
-) -> BTreeMap<String, &'a Value> {
+fn build_index<'a>(records: &'a [Value], key: &str) -> BTreeMap<String, &'a Value> {
     let mut map = BTreeMap::new();
     for rec in records {
         if let Some(k) = extract_key(rec, key) {
@@ -208,16 +201,16 @@ pub fn format_diff_table(result: &DiffResult) -> String {
         for m in &result.modified {
             out.push_str(&format!("  Key: {}\n", m.key));
             for c in &m.changes {
-                out.push_str(&format!(
-                    "    {}: {} → {}\n",
-                    c.field, c.old, c.new
-                ));
+                out.push_str(&format!("    {}: {} → {}\n", c.field, c.old, c.new));
             }
         }
     }
 
     if !result.unchanged.is_empty() {
-        out.push_str(&format!("\n= UNCHANGED: {} records\n", result.unchanged.len()));
+        out.push_str(&format!(
+            "\n= UNCHANGED: {} records\n",
+            result.unchanged.len()
+        ));
     }
 
     out

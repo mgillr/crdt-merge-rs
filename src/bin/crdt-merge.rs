@@ -6,8 +6,8 @@
 //! crdt-merge CLI – merge, dedup, diff & json-merge from the command line.
 
 use clap::{Parser, Subcommand};
-use crdt_merge::{dedup, diff, merge, merge_json, DedupResult, DiffResult, MergeOptions, Strategy};
 use crdt_merge::diff::format_diff_table;
+use crdt_merge::{dedup, diff, merge, merge_json, DedupResult, DiffResult, MergeOptions, Strategy};
 use serde_json::Value;
 use std::fs;
 use std::io::{self, Write};
@@ -144,8 +144,8 @@ fn read_records(path: &str) -> Result<Vec<Value>, String> {
 
     match ext.as_str() {
         "json" => {
-            let content = fs::read_to_string(path)
-                .map_err(|e| format!("Cannot read {}: {}", path, e))?;
+            let content =
+                fs::read_to_string(path).map_err(|e| format!("Cannot read {}: {}", path, e))?;
             let parsed: Value = serde_json::from_str(&content)
                 .map_err(|e| format!("Invalid JSON in {}: {}", path, e))?;
             match parsed {
@@ -157,8 +157,8 @@ fn read_records(path: &str) -> Result<Vec<Value>, String> {
         "csv" => read_csv(path),
         _ => {
             // Try JSON first, then CSV
-            let content = fs::read_to_string(path)
-                .map_err(|e| format!("Cannot read {}: {}", path, e))?;
+            let content =
+                fs::read_to_string(path).map_err(|e| format!("Cannot read {}: {}", path, e))?;
             if let Ok(parsed) = serde_json::from_str::<Value>(&content) {
                 match parsed {
                     Value::Array(arr) => Ok(arr),
@@ -173,8 +173,8 @@ fn read_records(path: &str) -> Result<Vec<Value>, String> {
 }
 
 fn read_csv(path: &str) -> Result<Vec<Value>, String> {
-    let mut rdr = csv::Reader::from_path(path)
-        .map_err(|e| format!("Cannot read CSV {}: {}", path, e))?;
+    let mut rdr =
+        csv::Reader::from_path(path).map_err(|e| format!("Cannot read CSV {}: {}", path, e))?;
     let headers: Vec<String> = rdr
         .headers()
         .map_err(|e| format!("CSV headers error: {}", e))?
@@ -220,11 +220,9 @@ fn write_output(content: &str, output: Option<&str>) -> Result<(), String> {
                 .to_lowercase();
             if ext == "csv" {
                 // Content is already CSV-formatted
-                fs::write(path, content)
-                    .map_err(|e| format!("Cannot write {}: {}", path, e))?;
+                fs::write(path, content).map_err(|e| format!("Cannot write {}: {}", path, e))?;
             } else {
-                fs::write(path, content)
-                    .map_err(|e| format!("Cannot write {}: {}", path, e))?;
+                fs::write(path, content).map_err(|e| format!("Cannot write {}: {}", path, e))?;
             }
         }
         None => {
@@ -344,12 +342,7 @@ fn cmd_dedup(
     write_output(&formatted, output)
 }
 
-fn cmd_diff(
-    file_a: &str,
-    file_b: &str,
-    key: &str,
-    output: Option<&str>,
-) -> Result<(), String> {
+fn cmd_diff(file_a: &str, file_b: &str, key: &str, output: Option<&str>) -> Result<(), String> {
     let a = read_records(file_a)?;
     let b = read_records(file_b)?;
     let result: DiffResult = diff(&a, &b, Some(key));
@@ -363,10 +356,10 @@ fn cmd_json_merge(
     strategy_str: &str,
     output: Option<&str>,
 ) -> Result<(), String> {
-    let content_a = fs::read_to_string(file_a)
-        .map_err(|e| format!("Cannot read {}: {}", file_a, e))?;
-    let content_b = fs::read_to_string(file_b)
-        .map_err(|e| format!("Cannot read {}: {}", file_b, e))?;
+    let content_a =
+        fs::read_to_string(file_a).map_err(|e| format!("Cannot read {}: {}", file_a, e))?;
+    let content_b =
+        fs::read_to_string(file_b).map_err(|e| format!("Cannot read {}: {}", file_b, e))?;
 
     let a: Value = serde_json::from_str(&content_a)
         .map_err(|e| format!("Invalid JSON in {}: {}", file_a, e))?;

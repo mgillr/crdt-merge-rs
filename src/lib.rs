@@ -15,14 +15,14 @@
 //! - Deep JSON merge
 
 pub mod core;
-pub mod merge;
 pub mod dedup;
 pub mod diff;
 pub mod json_merge;
+pub mod merge;
 
 // Re-exports for convenience
-pub use crate::core::{GCounter, PNCounter, LWWRegister, ORSet};
-pub use crate::merge::{merge, MergeOptions, Strategy};
+pub use crate::core::{GCounter, LWWRegister, ORSet, PNCounter};
 pub use crate::dedup::{dedup, DedupResult, DuplicatePair};
-pub use crate::diff::{diff, DiffResult, ModifiedRow, FieldChange};
+pub use crate::diff::{diff, DiffResult, FieldChange, ModifiedRow};
 pub use crate::json_merge::merge_json;
+pub use crate::merge::{merge, MergeOptions, Strategy};
